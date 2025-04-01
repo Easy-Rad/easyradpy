@@ -25,19 +25,15 @@ jobs:
     
     - name: Download and extract AutoHotkey
       run: |
-        Invoke-WebRequest -Uri https://www.autohotkey.com/download/ahk-v2.exe -OutFile ahk-v2.exe
-        Start-Process -FilePath ahk-v2.exe -ArgumentList "/S" -Wait
-        echo "AHK_PATH=C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        Invoke-WebRequest -Uri https://www.autohotkey.com/download/ahk-v2.zip -OutFile ahk-v2.zip
+        Expand-Archive -Path ahk-v2.zip -DestinationPath ahk_extracted
+        mkdir -p dist_resources
+        Copy-Item "ahk_extracted\AutoHotkey64.exe" -Destination dist_resources\AutoHotkey.exe
     
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    
-    - name: Prepare for PyInstaller
-      run: |
-        mkdir -p dist_resources
-        Copy-Item "C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe" -Destination dist_resources\AutoHotkey.exe
     
     - name: Build executable
       run: |
