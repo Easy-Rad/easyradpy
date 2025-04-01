@@ -25,10 +25,14 @@ jobs:
     
     - name: Download and extract AutoHotkey
       run: |
-        Invoke-WebRequest -Uri https://www.autohotkey.com/download/ahk-v2.zip -OutFile ahk-v2.zip
+        Invoke-WebRequest -Uri https://github.com/AutoHotkey/AutoHotkey/releases/download/v2.0.19/AutoHotkey_2.0.19.zip -OutFile ahk-v2.zip
         Expand-Archive -Path ahk-v2.zip -DestinationPath ahk_extracted
         mkdir -p dist_resources
-        Copy-Item "ahk_extracted\AutoHotkey64.exe" -Destination dist_resources\AutoHotkey.exe
+        if ("${{ matrix.architecture }}" -eq "x64") {
+          Copy-Item "ahk_extracted\AutoHotkey64.exe" -Destination dist_resources\AutoHotkey.exe
+        } else {
+          Copy-Item "ahk_extracted\AutoHotkey32.exe" -Destination dist_resources\AutoHotkey.exe
+        }
     
     - name: Install dependencies
       run: |
