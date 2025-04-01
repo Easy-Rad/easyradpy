@@ -1,0 +1,2 @@
+ahk[binary]==1.8.3
+pyinstaller==6.12.0 
