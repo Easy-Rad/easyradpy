@@ -12,6 +12,7 @@ class Order:
 
     def __post_init__(self):
         if self.modality == 'CT':
+            # unsure how this is really calculated
             self.body_parts = [x for x in self.body_parts if x not in (
                 'CSPINE',
                 'TSPINE',
@@ -20,16 +21,12 @@ class Order:
                 'KUB',
                 'KIDNEYS',
                 'ADRENALS',
-                  # 'PANCREAS',
-
             )]
         self.ffs_body_part_count = len(self.body_parts)
         if self.ffs_body_part_count == 0:
             if self.image_count:
-                # warn(f"Assuming 1 body part for {self.accession} ({self.study_description})")
+                # assume 1 body part
                 self.ffs_body_part_count = 1
-            # else:
-            #     warn(f"No images for {self.accession} ({self.study_description})")
         if self.ffs_body_part_count:
             match(self.modality):
                 case 'CT':
@@ -58,27 +55,6 @@ class Order:
                 case 'US':
                     self.fee = 12
                     self.ffs_body_part_count = 1
-                case _:
-                    raise Exception(f'Illegal state: modality = {self.modality}')
 
     def __str__(self):
-        return f"{self.modality}x{self.ffs_body_part_count} = ${self.fee} ({self.accession})"
-    
-    @staticmethod
-    def dict_from(response):
-        if not response['success']:
-            raise Exception('Server error')
-        orders = {}
-        for data in response['result']:
-            procedure = data['mRequestedProcedureList'][0]
-            if (modality := procedure['mNormalizedModality']) not in ('CT','CR','MR','US'):
-                continue
-            order = Order(
-                data['mAccessionNumber'],
-                data['mBodyPartList'],
-                modality,
-                procedure['mStudyDescription'],
-                procedure['mRemoteImageCount'],
-                )
-            orders[order.accession] = order
-        return orders
+        return f"{self.accession}: {self.modality}x{self.ffs_body_part_count}"

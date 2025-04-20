@@ -4,5 +4,4 @@ venv/
 __pycache__/
 _secrets.py
 iv_orders.json
-ps_auth.xml
 ps_reports.json
