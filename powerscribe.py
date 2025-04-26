@@ -1,5 +1,4 @@
 from datetime import datetime
-from math import hypot
 from typing import Callable
 
 from lxml.etree import Element
@@ -9,10 +8,10 @@ from zeep.exceptions import Fault
 from zeep.transports import Transport
 
 from errors import PasswordError, UsernameError
-from reporter import Reporter
 from ffs import FFS_DATA, within_ffs_hours
+from json_encoding import save_json
+from reporter import Reporter
 from search_config import SearchConfig
-from util import save_json
 
 # Script configuration
 LOAD_AUTH = False
@@ -90,6 +89,12 @@ class Powerscribe:
         self.last_name = sign_in_result.SignInResult.Person.LastName
         print(f'Signed in to Powerscribe as {self.first_name} {self.last_name} with account ID {self._account_id} and session ID {self._account_session.text}')
 
+    def get_accounts(self):
+        client = Client(f'http://{self._host}/RAS/Account.svc?wsdl', transport=self._transport)
+        client.set_default_soapheaders([self._account_session])
+        return {account['Name']: account['ID'] for account in
+                sorted(client.service.GetAccountNames(activeOnly=True), key=lambda a: a['Name'])}
+
     def get_reports(self, search_config: SearchConfig, on_progress_update: Callable[[int, int], None] | None = None):
         reports: dict[int, Reporter]
         if (account_id:=search_config.account_id) is None:
@@ -101,7 +106,8 @@ class Powerscribe:
                 p = client.service.GetAccount(account_id).Person
                 reports={account_id:Reporter(p.FirstName, p.LastName)}
             else:
-                reports = {account['ID']: Reporter.fromCommaSeparated(account['Name']) for account in client.service.GetAccountNames(activeOnly=False)}
+                reports = {account['ID']: Reporter.from_comma_separated(account['Name']) for account in
+                           client.service.GetAccountNames(activeOnly=False)}
 
         client = Client(f'http://{self._host}/RAS/Explorer.svc?wsdl', transport=self._transport)
         client.set_default_soapheaders([self._account_session])

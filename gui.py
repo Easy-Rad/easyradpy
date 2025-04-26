@@ -20,6 +20,7 @@ from util import date_format, fee_format
 class Gui:
     def __init__(self) -> None:
         self.ps = self.iv = None
+        self.accounts: dict[str, int] = {}
         try:
             self.proxy = environ['proxy']
         except KeyError:
@@ -44,9 +45,12 @@ class Gui:
                 self.error_text = dpg.add_text(label="Error", show=False, color=(255, 255, 0))
             with dpg.child_window(label="Search", show=False) as self.search_window:
                 with dpg.group(horizontal=True):
-                    self._select_user = dpg.add_radio_button(label='User', items=list(Account), default_value=Account.ALL,
-                                                       horizontal=True)
-                    self._select_period = dpg.add_combo(list(Period), label="Period", default_value=Period.PAST_HOUR,
+                    dpg.add_text('User:')
+                    self._select_user = dpg.add_radio_button(items=list(Account), default_value=Account.ALL,
+                                                             horizontal=True, callback=self._on_account_select)
+                    self._select_named_user = dpg.add_combo([], default_value="Select...", fit_width=True, show=False)
+                    dpg.add_text('Period:')
+                    self._select_period = dpg.add_combo(list(Period), default_value=Period.PAST_HOUR,
                                                         fit_width=True, callback=self._on_period_select)
                     with dpg.group(horizontal=True, show=False) as self.custom_period_group:
                         for label, date in {
@@ -70,11 +74,13 @@ class Gui:
                                     user_data=label,
                                 )
                                 self._update_date_time(None, None, label)
-                    self.ffs_checkbox = dpg.add_checkbox(label="FFS", default_value=True)
+                    dpg.add_text('FFS:')
+                    self.ffs_checkbox = dpg.add_checkbox(default_value=True)
                     dpg.add_button(label="Search", callback=self._on_search)
                 self.results = add_group()
 
     def _on_logout_request(self):
+        dpg.delete_item(self.results, children_only=True, slot=1)
         self.ps = self.iv = None
         dpg.hide_item(self.search_window)
         dpg.hide_item(self.auth_display)
@@ -115,11 +121,19 @@ class Gui:
     def on_login(self, ps: Powerscribe, iv: InteleViewer) -> None:
         self.ps = ps
         self.iv = iv
+        self.accounts = self.ps.get_accounts()
+        dpg.configure_item(self._select_named_user, items=(list(self.accounts.keys())))
         dpg.hide_item(self.login_button)
         dpg.hide_item(self.auth_input_fields)
         dpg.set_value(self.user_greeting, f'Logged in as {self.ps.first_name} {self.ps.last_name}')
         dpg.show_item(self.auth_display)
         dpg.show_item(self.search_window)
+
+    def _on_account_select(self, _, app_data):
+        if app_data == Account.OTHER:
+            dpg.show_item(self._select_named_user)
+        else:
+            dpg.hide_item(self._select_named_user)
 
     @staticmethod
     def _get_datetime_from_widgets(pickers: list[int | str]):
@@ -189,6 +203,8 @@ class Gui:
                 account_id = None
             case Account.ALL:
                 account_id = 0
+            case Account.OTHER:
+                account_id = self.accounts[dpg.get_value(self._select_named_user)]
         period = dpg.get_value(self._select_period)
         date_range = {
             tag_label: self._get_datetime_from_widgets([f"{tag_label}_date_picker", f"{tag_label}_time_picker"]) for

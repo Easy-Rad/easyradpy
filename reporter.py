@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-import re
 
 from ffs import FFSprofile
 from order import Order
+from util import split_name
 
 
 @dataclass
@@ -14,9 +14,9 @@ class Reporter:
     ffsProfile: FFSprofile | None = None
 
     @staticmethod
-    def fromCommaSeparated(commaSeparated: str):
-        result = re.split(r",\s*", commaSeparated, maxsplit=1)
-        return Reporter(result[1] if len(result) > 1 else '', result[0])
+    def from_comma_separated(comma_separated: str):
+        result = split_name(comma_separated)
+        return Reporter(first_name=result[0], last_name=result[1])
 
     def setFFS(self, orders: dict[str, Order]):
         study_count = 0

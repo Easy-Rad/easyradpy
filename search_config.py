@@ -5,7 +5,7 @@ from enum import StrEnum
 class Account(StrEnum):
     ME = 'Me'
     ALL = 'All'
-    # OTHER = 'Other'
+    OTHER = 'Other'
 
 class Period(StrEnum):
     PAST_HOUR = 'PastHour'

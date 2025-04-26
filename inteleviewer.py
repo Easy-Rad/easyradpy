@@ -3,10 +3,10 @@ import json
 
 import requests
 
-from errors import UsernameError, PasswordError, InteleviewerServerError, ServerError
+from errors import UsernameError, PasswordError, InteleviewerServerError
+from json_encoding import save_json
 from order import Order
 from search_config import SearchConfig
-from util import save_json
 
 IV_ORDERS_FILE = 'iv_orders.json'
 IV_HOST = "app-inteleradha-p.healthhub.health.nz"

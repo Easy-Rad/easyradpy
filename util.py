@@ -1,8 +1,5 @@
-import json
+import re
 from datetime import datetime
-
-from order import Order
-from reporter import Reporter
 
 
 def date_format(date: datetime) -> str:
@@ -11,27 +8,7 @@ def date_format(date: datetime) -> str:
 def fee_format(fee: int) -> str:
     return '${:,d}'.format(fee)
 
-def save_json(filename: str, obj) -> None:
-    with open(filename, mode='w') as f:
-        json.dump(obj, f, indent=2, default=json_serial)
 
-def json_serial(obj) -> str | dict:
-    if isinstance(obj, datetime):
-        return obj.isoformat()
-    elif isinstance(obj, Reporter):
-        return dict(
-            first_name=obj.first_name,
-            last_name=obj.last_name,
-            reports=obj.reports,
-            )
-    elif isinstance(obj, Order):
-        return dict(
-            accession=obj.accession,
-            body_parts=obj.body_parts,
-            modality=obj.modality,
-            study_description=obj.study_description,
-            image_count=obj.image_count,
-            ffs_body_part_count=obj.ffs_body_part_count,
-            fee=obj.fee,
-            )
-    raise TypeError (f'Type {type(obj)} not serializable')
+def split_name(name: str) -> tuple[str, str]:
+    result = re.split(r",\s*", name, maxsplit=1)
+    return result[1] if len(result) > 1 else '', result[0]
