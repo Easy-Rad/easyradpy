@@ -229,16 +229,20 @@ class Gui:
             freeze_rows=1,
             scrollY=True,
             policy=dpg.mvTable_SizingFixedFit,
-            # resizable=True,
-            # policy=dpg.mvTable_SizingFixed,
             resizable=True,
+                reorderable=True,
+                sortable=True,
+                sort_multi=True,
+                callback=Gui.sort_callback,
         ):
-            dpg.add_table_column(label='Name')
+            dpg.add_table_column(label='Surname')
+            dpg.add_table_column(label='First name')
             if ffs: dpg.add_table_column(label='Fee', width=400, width_stretch=False, width_fixed=True, init_width_or_weight=150)
             dpg.add_table_column(label='Studies', width_stretch=True, init_width_or_weight=1)
             for reporter in ffs_reports(reports, orders) if ffs else reports:
                 with dpg.table_row():
-                    dpg.add_text(f'{reporter.first_name} {reporter.last_name}')
+                    dpg.add_text(reporter.last_name)
+                    dpg.add_text(reporter.first_name)
                     if ffs:
                         with dpg.tree_node(label=fee_format(reporter.ffsProfile.fee), default_open=False):
                             with dpg.table():
@@ -286,6 +290,28 @@ class Gui:
                                         dpg.add_text(fee_format(order.fee))
                                     dpg.add_text(order.study_description)
 
+    @staticmethod
+    def sort_callback(sender, sort_specs):
+        if sort_specs is None: return
+        rows = []
+        columns = dpg.get_item_children(sender, 0)
+        for row_id in dpg.get_item_children(sender, 1):
+            keys = []
+            for sort_col, direction in sort_specs:
+                cell = dpg.get_item_children(row_id, 1)[columns.index(sort_col)]
+                match dpg.get_item_label(sort_col):
+                    case 'Surname' | 'First name':
+                        keys.append(dpg.get_value(cell))
+                    case 'Fee':
+                        keys.append(int(dpg.get_item_label(cell)[1:]))
+                    case 'Studies':
+                        keys.append(len(dpg.get_item_children(dpg.get_item_children(cell, 1)[0], 1)))
+                    case label:
+                        raise Exception(f'Unexpected sort column label: {label}')
+            rows.append((row_id, tuple(keys)))
+        for i, spec in reversed(list(enumerate(sort_specs))):
+            rows.sort(key=lambda row: row[1][i], reverse=spec[1] < 0)
+        dpg.reorder_items(sender, 1, [row_id for row_id, keys in rows])
 
 if __name__ == '__main__':
     dpg.create_context()
