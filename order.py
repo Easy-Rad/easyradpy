@@ -57,4 +57,4 @@ class Order:
                     self.ffs_body_part_count = 1
 
     def __str__(self):
-        return f"{self.accession}: {self.modality}x{self.ffs_body_part_count}"
+        return f"{self.accession}: {self.study_description} ({self.modality}x{self.ffs_body_part_count})"

@@ -5,3 +5,5 @@ __pycache__/
 _secrets.py
 iv_orders.json
 ps_reports.json
+.idea/
+/dpg_demo.py

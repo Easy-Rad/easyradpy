@@ -1,22 +1,21 @@
 import json
-from datetime import date, datetime
-from reporter import Reporter
+from datetime import datetime
+
 from order import Order
-import holidays
+from reporter import Reporter
 
-HOLIDAYS = holidays.NZ(subdiv='CAN')
 
-def weekend_or_holiday(d: date):
-    return d.isoweekday() >= 6 or d in HOLIDAYS
+def date_format(date: datetime) -> str:
+    return date.strftime('%a %d %b %Y, %H:%M')
 
-def within_ffs_hours(dt: datetime):
-    return dt.hour >= 6 and dt.hour < 23 and (dt.hour < 8 or dt.hour >= 18 or weekend_or_holiday(dt))
+def fee_format(fee: int) -> str:
+    return '${:,d}'.format(fee)
 
-def save_json(filename: str, obj):
+def save_json(filename: str, obj) -> None:
     with open(filename, mode='w') as f:
         json.dump(obj, f, indent=2, default=json_serial)
 
-def json_serial(obj):
+def json_serial(obj) -> str | dict:
     if isinstance(obj, datetime):
         return obj.isoformat()
     elif isinstance(obj, Reporter):

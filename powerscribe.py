@@ -1,49 +1,76 @@
-from enum import StrEnum
-from lxml import etree
 from datetime import datetime
-from zeep import Client, ns
-from zeep.cache import SqliteCache
-from zeep.transports import Transport
-from reporter import Reporter
-from util import save_json, within_ffs_hours
+from math import hypot
+from typing import Callable
 
-class Period(StrEnum):
-    CUSTOM = 'Custom' # Use date range
-    PAST_HOUR = 'PastHour'
-    PAST_FOUR_HOURS = 'PastFourHours'
-    TODAY = 'Today'
-    YESTERDAY = 'Yesterday'
-    PAST_TWO_DAYS = 'PastTwoDays'
-    PAST_THREE_DAYS = 'PastThreeDays'
-    PAST_WEEK = 'PastWeek'
-    PAST_TWO_WEEKS = 'PastTwoWeeks'
-    PAST_TWO_MONTH = 'PastMonth'
+from lxml.etree import Element
+from zeep import Client, ns, Plugin
+from zeep.cache import SqliteCache
+from zeep.exceptions import Fault
+from zeep.transports import Transport
+
+from errors import PasswordError, UsernameError
+from reporter import Reporter
+from ffs import FFS_DATA, within_ffs_hours
+from search_config import SearchConfig
+from util import save_json
 
 # Script configuration
 LOAD_AUTH = False
 PS_REPORTS_FILE = 'ps_reports.json'
 
 # PowerScribe 360 constants
-PAGE_SIZE = 500 # PS360
-PS_HOST = "mschcpscappp4.cdhb.local" # 172.30.4.157
+PAGE_SIZE = 2000 # PS360 (default=500)
 PS_VERSION = '7.0.212.0'
 TIME_ZONE_ID = 'New Zealand Standard Time' # PS360
 LOCALE = 'en-NZ' # PS360
+ORDER_STATUS = 'All'
+REPORT_STATUS = 'Final'
+SORT = 'LastModified ASC'
+SITE_ID = 0
+
 NAMESPACES = {
     's': ns.SOAP_ENV_12,
-    'ns1': 'Nuance/Radiology/Services/2010/01',
     'b':'http://schemas.datacontract.org/2004/07/Nuance.Radiology.Services.Contracts',
+    'ns1': 'Nuance/Radiology/Services/2010/01',
+    'ns2': 'http://schemas.datacontract.org/2004/07/Nuance.Radiology.Services',
 }
-
-type Account = tuple[int, str]
+PS_HOST = "mschcpscappp4.cdhb.local"
+# PS_HOST = "172.30.4.157"
 
 class Powerscribe:
 
-    def __init__(self, username: str, password: str):
+    _account_id: int
+    first_name: str
+    last_name: str
+
+    @staticmethod
+    def from_login_call(username: str, password: str, host: str | None = None, proxy: str | None = None):
+        ps = Powerscribe(host, proxy)
+        ps.login(username, password)
+        return ps
+
+    @staticmethod
+    def from_saved_session(account_id: int, first_name: str, last_name: str, session_id: str, host: str | None = None, proxy: str | None = None):
+        ps = Powerscribe(host, proxy)
+        ps._account_id = account_id
+        ps.first_name = first_name
+        ps.last_name = last_name
+        ps._account_session = Element('AccountSession')
+        ps._account_session.text = session_id
+        print(f'Using Powerscribe from saved session ID {session_id}')
+        return ps
+
+    def __init__(self, host: str | None, proxy: str | None):
+        self._account_session = None
+        self._host = host or PS_HOST
         self._transport = Transport(cache=SqliteCache(timeout=None))
-        client = Client(f'http://{PS_HOST}/RAS/Session.svc?wsdl', transport=self._transport)
-        with client.settings(raw_response=True):
-            signInResult = client.service.SignIn(
+        if proxy:
+            self._transport.session.proxies['http'] = proxy
+
+    def login(self, username: str, password: str):
+        client = Client(f'http://{self._host}/RAS/Session.svc?wsdl', transport=self._transport, plugins=[SaveAccountSessionPlugin(self)])
+        try:
+            sign_in_result = client.service.SignIn(
                 loginName=username,
                 password=password,
                 adminMode=False,
@@ -51,22 +78,24 @@ class Powerscribe:
                 workstation='',
                 locale=LOCALE,
                 timeZoneId=TIME_ZONE_ID,
-                )
-        envelope = etree.fromstring(signInResult.text)
-        self._account_session = envelope.find('./s:Header/AccountSession', NAMESPACES)
-        sign_in_result = envelope.find('./s:Body/ns1:SignInResponse/ns1:SignInResult', NAMESPACES)
-        self._account_id = int(sign_in_result.find('./b:AccountID', NAMESPACES).text)
-        person = sign_in_result.find('./b:Person', NAMESPACES)
-        self.first_name = person.find('./b:FirstName', NAMESPACES).text
-        self.last_name = person.find('./b:LastName', NAMESPACES).text
+            )
+        except Fault as f:
+            match int(f.detail.find('./ns2:RasException/ns2:Code', NAMESPACES).text):
+                case 3: raise UsernameError(f.message) from f
+                case 4: raise PasswordError(f.message) from f
+            raise
+        assert self._account_session is not None
+        self._account_id = sign_in_result.SignInResult.AccountID
+        self.first_name = sign_in_result.SignInResult.Person.FirstName
+        self.last_name = sign_in_result.SignInResult.Person.LastName
+        print(f'Signed in to Powerscribe as {self.first_name} {self.last_name} with account ID {self._account_id} and session ID {self._account_session.text}')
 
-    def getReports(self, account_id: int | None, period: Period, date_range: dict[str, datetime], ffs_hours_only: bool, save_last_request: bool):
+    def get_reports(self, search_config: SearchConfig, on_progress_update: Callable[[int, int], None] | None = None):
         reports: dict[int, Reporter]
-
-        if account_id is None:
+        if (account_id:=search_config.account_id) is None:
             reports={(account_id:=self._account_id):Reporter(self.first_name, self.last_name)}
         else:
-            client = Client(f'http://{PS_HOST}/RAS/Account.svc?wsdl', transport=self._transport)
+            client = Client(f'http://{self._host}/RAS/Account.svc?wsdl', transport=self._transport)
             client.set_default_soapheaders([self._account_session])
             if account_id:
                 p = client.service.GetAccount(account_id).Person
@@ -74,41 +103,69 @@ class Powerscribe:
             else:
                 reports = {account['ID']: Reporter.fromCommaSeparated(account['Name']) for account in client.service.GetAccountNames(activeOnly=False)}
 
-        client = Client(f'http://{PS_HOST}/RAS/Explorer.svc?wsdl', transport=self._transport)
+        client = Client(f'http://{self._host}/RAS/Explorer.svc?wsdl', transport=self._transport)
         client.set_default_soapheaders([self._account_session])
+        time = dict(
+            Period=search_config.period,
+            From=search_config.from_date.isoformat(timespec='seconds'),
+            To=search_config.to_date.isoformat(timespec='seconds'),
+        )
+        expected_reports = client.service.GetBrowseOrdersCount(
+            siteID=SITE_ID,
+            time=time,
+            orderStatus=ORDER_STATUS,
+            reportStatus=REPORT_STATUS,
+            accountID=account_id
+        )
+        print(f"Reports expected from Powerscribe: {expected_reports}")
         page_number = 0
-        total_reports = 0
+        retrieved_reports = 0
+        filtered_reports = 0
         while True:
+            if on_progress_update is not None:
+                on_progress_update(retrieved_reports, expected_reports)
             page_number += 1
             result = client.service.BrowseOrdersDV(
-                siteID=0,
-                time=dict(Period=period,From=date_range['from'].isoformat(timespec='seconds'), To=date_range['to'].isoformat(timespec='seconds')),
-                orderStatus='All',
-                reportStatus='Final',
-                # transferStatus='Sent', # filters out 'Rejected' (ELR, NMDHB) but also 'Ready' (recently signed)
+                siteID=SITE_ID,
+                time=time,
+                orderStatus=ORDER_STATUS,
+                reportStatus=REPORT_STATUS,
                 accountID=account_id,
-                sort='LastModified ASC',
+                sort=SORT,
                 pageSize=PAGE_SIZE,
                 pageNumber=page_number,
             )
+            retrieved_reports += len(result)
             for item in result:
                 if (s := item.find('./SignerAcctID')) is None: # no signer on Powerscribe
                     continue
                 signer_id = int(s.text)
                 if account_id != 0 and signer_id != account_id: # target user is not the final reporter
-                    continue 
+                    continue
+                accession = item.find('./Accession').text
+                if search_config.ffs_only and accession[-2:] not in FFS_DATA: # filter modality
+                    continue
                 modified = datetime.fromisoformat(item.find('./LastModified').text)
-                if not ffs_hours_only or within_ffs_hours(modified):
-                    reports[signer_id].reports.append((
-                        item.find('./Accession').text,
-                        modified,
-                    ))
-                    total_reports += 1
+                if search_config.ffs_only and not within_ffs_hours(modified): # filter last modified timestamp
+                    continue
+                reports[signer_id].reports.append((accession,modified))
+                filtered_reports += 1
             if len(result) < PAGE_SIZE:
-                print(f"\nReports retrieved from Powerscribe: {(page_number-1)*PAGE_SIZE+len(result)}")
+                print(f"Reports retrieved from Powerscribe: {retrieved_reports}")
                 break
-        if save_last_request:
+        if on_progress_update is not None:
+            on_progress_update(retrieved_reports, retrieved_reports)
+        if search_config.ffs_only:
+            print(f"Filtered reports (FFS only): {filtered_reports}")
+        if search_config.save_last_request:
             save_json(PS_REPORTS_FILE, reports)
-        if ffs_hours_only:
-            print(f"Filtered reports (FFS hours only): {total_reports}")
         return [reporter for reporter in reports.values() if len(reporter.reports)]
+
+class SaveAccountSessionPlugin(Plugin):
+    def __init__(self, ps : Powerscribe):
+        self.ps = ps
+
+    def ingress(self, envelope, http_headers, operation):
+        self.ps._account_session = envelope.find('./s:Header/AccountSession', NAMESPACES)
+        return envelope, http_headers
+
