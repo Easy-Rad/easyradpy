@@ -1,11 +1,7 @@
-import os
-import platform
-import sys
 from datetime import datetime
 from os import environ
 
 import dearpygui.dearpygui as dpg
-from ahk import AHK
 from dearpygui.dearpygui import add_group
 from requests.exceptions import ConnectionError
 
@@ -350,20 +346,5 @@ def main():
     dpg.destroy_context()
 
 
-def show_message():
-    # Set the path to the bundled AHK executable if running as a compiled executable
-    if getattr(sys, 'frozen', False):
-        ahk = AHK(
-            executable_path=os.path.join(getattr(sys, "_MEIPASS", os.path.dirname(os.path.realpath(sys.executable))),
-                                         "AutoHotkey.exe"))
-
-    else:
-        ahk = AHK(version="v2")
-
-    # Show a message box directly using AHK
-    ahk.msg_box(f'Python version {platform.python_version()}\nAHK version {ahk.get_version()}')
-
-
 if __name__ == '__main__':
-    show_message()
     main()
