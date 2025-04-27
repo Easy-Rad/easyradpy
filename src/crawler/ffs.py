@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
 
-import holidays
+from holidays.countries import NZ
 
 FFS_DATA = dict(
     CT=('CT', (60, 135, 160, 200)),
@@ -17,7 +17,7 @@ USER_TIMEZONES = {
 }
 DEFAULT_TIMEZONE = ZoneInfo('Pacific/Auckland')
 
-HOLIDAYS = holidays.NZ(subdiv='CAN')
+HOLIDAYS = NZ(subdiv='CAN')
 
 @dataclass
 class FFSprofile:
