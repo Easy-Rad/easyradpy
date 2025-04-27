@@ -1,13 +1,11 @@
 import re
 from datetime import datetime
 
-
 def date_format(date: datetime) -> str:
-    return date.strftime('%a %d %b %Y, %H:%M')
+    return date.strftime('%a %d %b %Y, %H:%M %Z')
 
 def fee_format(fee: int) -> str:
     return '${:,d}'.format(fee)
-
 
 def split_name(name: str) -> tuple[str, str]:
     result = re.split(r",\s*", name, maxsplit=1)

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from ffs import FFSprofile
 from order import Order
-from util import split_name
+from util import split_name, date_format
 
 
 @dataclass
@@ -56,7 +56,7 @@ class Reporter:
                     lines.append(s)
         if include_individual_orders:
             for (accession, modified) in self.reports:
-                lines.append(f"{orders[accession]} on {modified.strftime('%a %d %b %Y, %H:%M')}")
+                lines.append(f"{orders[accession]} on {date_format(modified)}")
         return '\n'.join(lines)
 
 def unique_accessions(reports: list[Reporter]):

@@ -8,7 +8,7 @@ from zeep.exceptions import Fault
 from zeep.transports import Transport
 
 from errors import PasswordError, UsernameError, AuthError, PowerscribeServerError
-from ffs import FFS_DATA, within_ffs_hours
+from ffs import FFS_DATA, within_ffs_hours, get_local_date_time
 from json_encoding import save_json
 from reporter import Reporter
 from search_config import SearchConfig
@@ -167,7 +167,7 @@ class Powerscribe:
                 accession = item.find('./Accession').text
                 if search_config.ffs_only and accession[-2:] not in FFS_DATA: # filter modality
                     continue
-                modified = datetime.fromisoformat(item.find('./LastModified').text)
+                modified = get_local_date_time(datetime.fromisoformat(item.find('./LastModified').text), signer_id)
                 if search_config.ffs_only and not within_ffs_hours(modified): # filter last modified timestamp
                     continue
                 reports[signer_id].reports.append((accession,modified))

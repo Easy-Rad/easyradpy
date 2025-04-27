@@ -316,7 +316,7 @@ class Gui:
                     case 'Surname' | 'First name':
                         keys.append(dpg.get_value(cell))
                     case 'Fee':
-                        keys.append(int(dpg.get_item_label(cell)[1:]))
+                        keys.append(int(dpg.get_item_label(cell)[1:].replace(',', '')))
                     case 'Studies':
                         keys.append(len(dpg.get_item_children(dpg.get_item_children(cell, 1)[0], 1)))
                     case label:
