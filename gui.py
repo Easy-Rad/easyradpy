@@ -3,8 +3,8 @@ from os import environ
 
 import dearpygui.dearpygui as dpg
 from dearpygui.dearpygui import add_group
-from zeep.exceptions import Fault as ZeepError
 
+from requests.exceptions import ConnectionError
 from errors import UsernameError, PasswordError, AuthError, InteleviewerServerError
 from ffs import FFS_DATA
 from inteleviewer import InteleViewer
@@ -79,7 +79,9 @@ class Gui:
                     dpg.add_button(label="Search", callback=self._on_search)
                 self.results = add_group()
 
-    def _on_logout_request(self):
+    def _on_logout_request(self, _, __, to_delete=None):
+        if to_delete is not None:
+            dpg.delete_item(to_delete)
         dpg.delete_item(self.results, children_only=True, slot=1)
         self.ps = self.iv = None
         dpg.hide_item(self.search_window)
@@ -97,31 +99,41 @@ class Gui:
         else:
             dpg.disable_item(self.username_field)
             dpg.disable_item(self.password_field)
-            dpg.show_item(self.loading)
-            dpg.hide_item(self.login_button)
+            dpg.disable_item(self.login_button)
             dpg.hide_item(self.error_text)
+            dpg.show_item(self.loading)
             try:
-                ps = Powerscribe.from_login_call(username_value, password_value, proxy=self.proxy)
-                iv = InteleViewer.from_login_call(username_value, password_value, proxy=self.proxy)
-            except (AuthError, ZeepError) as e:
-                dpg.set_value(self.error_text, e.message)
+                try:
+                    iv = InteleViewer.from_login_call(username_value, password_value, proxy=self.proxy)
+                except ConnectionError:
+                    dpg.set_value(self.error_text, 'InteleViewer connection error')
+                    dpg.show_item(self.error_text)
+                else:
+                    try:
+                        ps = Powerscribe.from_login_call(username_value, password_value, proxy=self.proxy)
+                        accounts = ps.get_accounts()
+                    except ConnectionError:
+                        dpg.set_value(self.error_text, 'Powerscribe connection error')
+                        dpg.show_item(self.error_text)
+                    else:
+                        self.on_login(ps, iv, accounts)
+            except AuthError as e:
+                dpg.set_value(self.error_text, e)
                 dpg.show_item(self.error_text)
-                dpg.show_item(self.login_button)
                 if isinstance(e, UsernameError):
                     dpg.focus_item(self.username_field)
                 elif isinstance(e, PasswordError):
                     dpg.focus_item(self.password_field)
-            else:
-                self.on_login(ps, iv)
             finally:
                 dpg.enable_item(self.username_field)
                 dpg.enable_item(self.password_field)
+                dpg.enable_item(self.login_button)
                 dpg.hide_item(self.loading)
 
-    def on_login(self, ps: Powerscribe, iv: InteleViewer) -> None:
+    def on_login(self, ps: Powerscribe, iv: InteleViewer, accounts: dict[str, int]) -> None:
         self.ps = ps
         self.iv = iv
-        self.accounts = self.ps.get_accounts()
+        self.accounts = accounts
         dpg.configure_item(self._select_named_user, items=(list(self.accounts.keys())))
         dpg.hide_item(self.login_button)
         dpg.hide_item(self.auth_input_fields)
@@ -185,9 +197,10 @@ class Gui:
         try:
             orders = self.iv.get_orders(accessions, search_config)
         except InteleviewerServerError as e:
-            with dpg.window(modal=True):
+            with dpg.window(modal=True) as error_window:
                 dpg.add_text(f'InteleViewer server error')
                 dpg.add_text(str(e), indent=1)
+                dpg.add_button(label="Log out", callback=self._on_logout_request, user_data=error_window)
         else:
             self._on_progress(iv_progress, len(orders), len(orders))
             self._generate_table(self.results, reports, orders, search_config.ffs_only)
@@ -328,7 +341,7 @@ if __name__ == '__main__':
         powerscribe = Powerscribe.from_saved_session(ps_account_id, f'[{username}]', f'[ID#{ps_account_id}]' , ps_session,
                                             proxy=gui.proxy)
         inteleviewer = InteleViewer.from_saved_session(username, iv_session, proxy=gui.proxy)
-        gui.on_login(powerscribe, inteleviewer)
+        gui.on_login(powerscribe, inteleviewer, powerscribe.get_accounts())
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()

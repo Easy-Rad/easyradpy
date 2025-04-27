@@ -56,9 +56,9 @@ class InteleViewer:
             try:
                 match failure['enumName']:
                     case 'BAD_USERNAME':
-                        raise UsernameError('Inteleviewer username error')
+                        raise UsernameError('InteleViewer', 'username error (case sensitive)')
                     case 'BAD_PASSWORD':
-                        raise PasswordError('Inteleviewer password error')
+                        raise PasswordError('InteleViewer', 'password error')
                     case e:
                         raise Exception(e)
             except KeyError:

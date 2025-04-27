@@ -7,7 +7,7 @@ from zeep.cache import SqliteCache
 from zeep.exceptions import Fault
 from zeep.transports import Transport
 
-from errors import PasswordError, UsernameError
+from errors import PasswordError, UsernameError, AuthError, PowerscribeServerError
 from ffs import FFS_DATA, within_ffs_hours
 from json_encoding import save_json
 from reporter import Reporter
@@ -79,22 +79,38 @@ class Powerscribe:
                 timeZoneId=TIME_ZONE_ID,
             )
         except Fault as f:
-            match int(f.detail.find('./ns2:RasException/ns2:Code', NAMESPACES).text):
-                case 3: raise UsernameError(f.message) from f
-                case 4: raise PasswordError(f.message) from f
-            raise
+            raise self.to_error(f)
         assert self._account_session is not None
         self._account_id = sign_in_result.SignInResult.AccountID
         self.first_name = sign_in_result.SignInResult.Person.FirstName
         self.last_name = sign_in_result.SignInResult.Person.LastName
         print(f'Signed in to Powerscribe as {self.first_name} {self.last_name} with account ID {self._account_id} and session ID {self._account_session.text}')
 
+    @staticmethod
+    def to_error(f: Fault):
+        exception = f.detail.find('./ns2:RasException', NAMESPACES)
+        error_type = exception.find('./ns2:Type', NAMESPACES).text
+        code = int(exception.find('./ns2:Code', NAMESPACES).text)
+        match error_type, code:
+            case 'Security', 3:
+                return UsernameError('Powerscribe', f.message)
+            case 'Security', 0:
+                return AuthError('Powerscribe', f.message)
+            case 'InvalidOperation', 4:
+                return PasswordError('Powerscribe', f.message)
+        stack_trace = exception.find('./ns2:Details', NAMESPACES).text.split('\r\n')
+        return PowerscribeServerError(f.message, error_type, code, stack_trace)
+
     def get_accounts(self):
         client = Client(f'http://{self._host}/RAS/Account.svc?wsdl', transport=self._transport)
         client.set_default_soapheaders([self._account_session])
-        return {account['Name']: account['ID'] for account in
+        try:
+            accounts = {account['Name']: account['ID'] for account in
                 sorted(client.service.GetAccountNames(activeOnly=True), key=lambda a: a['Name'])}
-
+        except Fault as f:
+            raise self.to_error(f)
+        else:
+            return accounts
     def get_reports(self, search_config: SearchConfig, on_progress_update: Callable[[int, int], None] | None = None):
         reports: dict[int, Reporter]
         if (account_id:=search_config.account_id) is None:
