@@ -24,6 +24,8 @@ build/
 .env.local
 
 # Logs
-*.log 
+*.log
+iv_orders.json
+ps_reports.json
 
 dist_resources/
