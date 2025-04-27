@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from ..order import Order
-from ..reporter import Reporter
+from src.model import Order, Reporter
 
 ACCESSION_1 = 'CA-12334-CT'
 ACCESSION_2 = 'CA-52314-CT'

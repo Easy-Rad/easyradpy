@@ -3,8 +3,7 @@ import platform
 import sys
 
 from ahk import AHK
-
-from crawler import gui
+from src.gui import main as gui_main
 
 
 def show_message():
@@ -21,5 +20,4 @@ if __name__ == "__main__":
         ahk = AHK(version="v2")
     ahk.add_hotkey('^+m', callback=show_message)
     ahk.start_hotkeys()  # start the hotkey process thread
-    gui.main()
-
+    gui_main()

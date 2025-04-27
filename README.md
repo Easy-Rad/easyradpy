@@ -20,7 +20,7 @@ A simple AutoHotkey script generator using Python and the `ahk` library.
 
 Run the script:
 ```bash
-python src/main.py
+python main.py
 ```
 
 ## Building

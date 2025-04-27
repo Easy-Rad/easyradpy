@@ -1,10 +1,8 @@
 import sys
 from datetime import datetime
 
-from .inteleviewer import InteleViewer
-from .powerscribe import Powerscribe
-from .reporter import unique_accessions, ffs_reports
-from .search_config import SearchConfig, Period
+from src.interface import InteleViewer, Powerscribe
+from src.model import unique_accessions, ffs_reports, SearchConfig, Period
 
 SEARCH_CONFIG =SearchConfig(
     ffs_only=False,

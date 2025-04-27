@@ -41,7 +41,7 @@ jobs:
     
     - name: Build executable
       run: |
-        pyinstaller --onefile --noconsole --add-data "dist_resources\AutoHotkey.exe;." --name "EasyRadPy_${{ matrix.architecture }}" src/main.py
+        pyinstaller --onefile --noconsole --add-data "dist_resources\AutoHotkey.exe;." --name "EasyRadPy_${{ matrix.architecture }}" main.py
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4

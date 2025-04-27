@@ -37,7 +37,6 @@ def get_local_date_time(dt: datetime, account_id: int):
 def within_ffs_hours(local_date_time: datetime):
     return 6 <= local_date_time.hour < 23 and outside_working_hours(local_date_time.astimezone(DEFAULT_TIMEZONE))
 
-
 def outside_working_hours(dt: datetime):
     return dt.hour < 8 or dt.hour >= 18 or weekend_or_holiday(dt)
 

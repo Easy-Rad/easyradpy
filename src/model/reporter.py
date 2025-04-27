@@ -1,9 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from .ffs import FFSprofile
-from .order import Order
-from .util import split_name, date_format
+from . import Order, FFSprofile
+from ..util.format import split_name, date_format
 
 
 @dataclass

@@ -2,17 +2,12 @@ from datetime import datetime
 from os import environ
 
 import dearpygui.dearpygui as dpg
-from dearpygui.dearpygui import add_group
 from requests.exceptions import ConnectionError
 
-from .errors import UsernameError, PasswordError, AuthError, InteleviewerServerError
-from .ffs import FFS_DATA
-from .inteleviewer import InteleViewer
-from .order import Order
-from .powerscribe import Powerscribe
-from .reporter import ffs_reports, Reporter, unique_accessions
-from .search_config import Period, Account, SearchConfig
-from .util import date_format, fee_format
+from ..interface import InteleViewer, Powerscribe
+from ..model import Order, UsernameError, PasswordError, AuthError, InteleviewerServerError, Period, Account, \
+    SearchConfig, Reporter, ffs_reports, unique_accessions, FFS_DATA
+from ..util.format import date_format, fee_format
 
 
 class Gui:
@@ -75,7 +70,7 @@ class Gui:
                     dpg.add_text('FFS:')
                     self.ffs_checkbox = dpg.add_checkbox(default_value=False)
                     dpg.add_button(label="Search", callback=self._on_search)
-                self.results = add_group()
+                self.results = dpg.add_group()
 
     def _on_logout_request(self, _, __, to_delete=None):
         if to_delete is not None:
@@ -226,6 +221,7 @@ class Gui:
             period=period,
             from_date=date_range['from'],
             to_date=date_range['to'],
+            save_last_request=False,
         )
 
     @staticmethod
@@ -328,7 +324,7 @@ def main():
     dpg.create_context()
     dpg.create_viewport(title='Dashboard', width=1200, height=600, always_on_top=False)
     gui = Gui()
-    try: # load saved session from environment variables
+    try:  # load saved session from environment variables
         assert (ps_session := environ['ps_session'])
         assert (iv_session := environ['iv_session'])
     except (KeyError, AssertionError):
@@ -336,15 +332,11 @@ def main():
     else:
         assert (username := environ['username'])
         assert (ps_account_id := int(environ['ps_account_id']))
-        powerscribe = Powerscribe.from_saved_session(ps_account_id, f'[{username}]', f'[ID#{ps_account_id}]' , ps_session,
-                                            proxy=gui.proxy)
+        powerscribe = Powerscribe.from_saved_session(ps_account_id, f'[{username}]', f'[ID#{ps_account_id}]', ps_session,
+                                                     proxy=gui.proxy)
         inteleviewer = InteleViewer.from_saved_session(username, iv_session, proxy=gui.proxy)
         gui.on_login(powerscribe, inteleviewer, powerscribe.get_accounts())
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()
     dpg.destroy_context()
-
-
-if __name__ == '__main__':
-    main()

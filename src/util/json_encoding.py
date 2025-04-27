@@ -1,8 +1,7 @@
 import json
 from datetime import datetime
 
-from .order import Order
-from .reporter import Reporter
+from ..model import Order, Reporter
 
 
 def save_json(filename: str, obj) -> None:
