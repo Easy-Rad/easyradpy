@@ -1,0 +1,1 @@
+from .ahk import MyAHK
