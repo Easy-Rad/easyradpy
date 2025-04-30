@@ -5,8 +5,8 @@ from time import sleep
 
 from ahk import AHK
 
-from src.autotriage.error import AutoTriageError
-from src.autotriage.request import Request
+from ..autotriage import AutoTriageError
+from ..autotriage import Request
 
 
 class MyAHK:

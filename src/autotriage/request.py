@@ -1,7 +1,7 @@
 import re
 
 from .error import AutoTriageError
-from src.autotriage.modality import Modality
+from .modality import Modality
 from .priority import Priority
 
 

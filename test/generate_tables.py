@@ -1,7 +1,7 @@
 import dearpygui.dearpygui as dpg
 
 from src.gui import Gui
-from . import sample_reports, sample_orders
+from .mock_data import sample_reports, sample_orders
 
 if __name__ == '__main__':
     dpg.create_context()

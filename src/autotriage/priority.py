@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from src.autotriage.error import AutoTriageError
+from .error import AutoTriageError
 
 
 class Priority(Enum):
