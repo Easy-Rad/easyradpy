@@ -18,9 +18,29 @@ A simple AutoHotkey script generator using Python and the `ahk` library.
 
 ## Usage
 
-Run the script:
+Run all:
 ```bash
-python main.py
+python -m main
+```
+
+Run only the AHK module:
+```bash
+python -m src.ahk
+```
+
+Run only the GUI module:
+```bash
+python -m src.gui
+```
+
+Show reports with mock data:
+```bash
+python -m test.generate_tables
+```
+
+Run the crawler script:
+```bash
+python -m tools.crawler
 ```
 
 ## Building

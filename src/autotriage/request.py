@@ -33,7 +33,3 @@ class Request:
             raise AutoTriageError(f'Object missing "rf_original_priority"')
         else:
             print(f'Priority: {self.priority}')
-
-
-
-
