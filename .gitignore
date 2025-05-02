@@ -29,3 +29,5 @@ iv_orders.json
 ps_reports.json
 
 dist_resources/
+/tools/serviceAccountKey.json
+/tools/AutoTriage.sqlite3
