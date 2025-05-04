@@ -1,12 +1,11 @@
 import os
 import platform
 import sys
-from time import sleep
 
 from ahk import AHK
 
-from ..autotriage import AutoTriageError, Request, Priority, Examination, BodyPart
-from ..database import Database
+from ..autotriage import AutoTriageError, Priority, BodyPart, request_from_clipboard
+from ..database import Database, ExaminationNotFoundError
 
 class MyAHK:
 
@@ -58,7 +57,7 @@ class MyAHK:
                 raise AutoTriageError('No request found')
         finally:
             self.ahk.set_clipboard(restore_clipboard)
-        request = Request(clipboard)
+        request = request_from_clipboard(clipboard)
         # self.ahk.show_traytip('Success', f'{request.modality.name} - {request.exam}')
         self.ahk.send('{Tab}') # Tab to "Radiology Category"
         match request.priority:
@@ -75,8 +74,12 @@ class MyAHK:
         if rank is not None:
             self.ahk.send(f'^a{rank}') # select all, enter rank
         self.ahk.send('{Tab 2}') # Tab to "Body Part"
-        exam = self.database.get_examination(request)
-        match exam.body_part:
+        try:
+            body_part, code = self.database.get_examination(request)
+        except ExaminationNotFoundError as e:
+            # todo implement GUI
+            raise
+        match body_part:
             case BodyPart.CHEST: self.ahk.send('{Home}C')
             case BodyPart.CHEST_ABDO: self.ahk.send('{Home}CC')
             case body_part:
@@ -84,7 +87,7 @@ class MyAHK:
         self.ahk.send(
             '{Tab 7}' # Tab to table (need 7 rather than 6 if CONT_SENST is showing)
             + '{Home}{Tab}' # Navigate to "Code" cell
-            + exam.code # Enter code
+            + code # Enter code
             + '{Tab}' # Tab out of cell
         )
 

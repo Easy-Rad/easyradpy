@@ -43,8 +43,21 @@ def update_database_examinations(overwrite=False):
 def update_database_labels(overwrite=False):
     with sqlite3.connect(SQLITE_DB_PATH) as con:
         con.row_factory = sqlite3.Row
+
+        res = con.execute("select modality.name as modality, examination.name, code from examination join modality on examination.modality = modality.id")
+        examinations = {f'{row['modality']}/{tokenise_request(row['name'])}': (row['name'], row['code']) for row in res}
+        # print(examinations)
         res = con.execute("select modality.name as modality, label.name, examination.code from label join examination on label.examination = examination.id join modality on examination.modality = modality.id")
-        output = { f'{row['modality']}/{tokenise_request(row['name'])}': row['code'] for row in res }
+        output = {}
+        for row in res:
+            key, code = f'{row['modality']}/{tokenise_request(row['name'])}', row['code']
+            try:
+                canonical_name, canonical_code = examinations[key]
+                assert code == canonical_code
+                print(f'"{row['name']}" matches "{canonical_name}" ({canonical_code})')
+            except KeyError:
+                output[key] = code
+        print(output)
         ref = db.reference('/label')
         if overwrite: ref.set(output)
         else: ref.update(output)

@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from enum import StrEnum
 
 class BodyPart(StrEnum):
@@ -20,7 +19,4 @@ class BodyPart(StrEnum):
     OTHER = 'OTHER'
     NOTAPPLIC = 'NOTAPPLIC'
 
-@dataclass
-class Examination:
-    body_part: BodyPart
-    code: str
+type Examination = tuple[BodyPart, str]

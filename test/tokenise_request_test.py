@@ -14,9 +14,5 @@ class TestTokeniser(unittest.TestCase):
     def test_distinguish_between_hyphens_and_c_plus_c_minus(self):
         self.tokenise('abdomen c+ c- cardiac chest', 'c- CT chest- -abdomen-and cardiac- C+ MR')
 
-    # def test_preserve_non_contrast(self):
-    #     self.tokenise( 'non-contrast', 'non-contrast')
-
-
 if __name__ == '__main__':
     unittest.main()
