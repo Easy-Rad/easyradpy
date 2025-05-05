@@ -1,0 +1,769 @@
+{
+  "QCBCTDEN": {
+    "bodyPart": "HEAD",
+    "name": "CBCT Dental",
+    "topic": 889658
+  },
+  "QCBCTEXT": {
+    "bodyPart": "OTHER",
+    "name": "CBCT Extremity",
+    "topic": 889667
+  },
+  "QCBCTFB": {
+    "bodyPart": "HEAD",
+    "name": "CBCT Facial Bones",
+    "topic": 889669
+  },
+  "QCBCTSIN": {
+    "bodyPart": "HEAD",
+    "name": "CBCT Sinuses",
+    "topic": 889670
+  },
+  "QCBCTTB": {
+    "bodyPart": "HEAD",
+    "name": "CBCT Temporal Bones",
+    "topic": 889765
+  },
+  "Q18E": {
+    "bodyPart": "CHEST",
+    "name": "CHEST + EXP HRCT C+",
+    "topic": 602877
+  },
+  "Q18P": {
+    "bodyPart": "CHEST",
+    "name": "CHEST + PRONE HRCT C+",
+    "topic": 602875
+  },
+  "QNOC+": {
+    "bodyPart": "OTHER",
+    "name": "CONTRAST CONTRAINDICATED"
+  },
+  "Q29": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN 2 PHASE LIVER C+",
+    "topic": 557539
+  },
+  "Q24": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN ADRENAL C+",
+    "topic": 557516
+  },
+  "Q23": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN ADRENAL C-",
+    "topic": 557516
+  },
+  "Q22": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN C+",
+    "topic": 557511
+  },
+  "Q25C": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY C+",
+    "topic": 557518
+  },
+  "Q25CBS": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY C+ BS"
+  },
+  "Q25": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY C-",
+    "topic": 557517
+  },
+  "Q25BS": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY C- BS"
+  },
+  "Q25TC": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY TAGGED C+",
+    "topic": 557525
+  },
+  "Q25TCBS": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY TAGGED C+ BS"
+  },
+  "Q25T": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY TAGGED C-",
+    "topic": 557523
+  },
+  "Q25TBS": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN COLONOGRAPHY TAGGED C- BS"
+  },
+  "Q101": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN CYSTOGRAM",
+    "topic": 557758
+  },
+  "Q34": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN IVU C+",
+    "topic": 557551
+  },
+  "Q33": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN KUB C-",
+    "topic": 557548
+  },
+  "Q33LD": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN KUB LOW DOSE C-",
+    "topic": 663574
+  },
+  "Q31": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN MULTIPHASE LIVER C+",
+    "topic": 557543
+  },
+  "Q70": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN PAED C+",
+    "topic": 557655
+  },
+  "Q32": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN PANCREAS C+",
+    "topic": 557544
+  },
+  "Q32W": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN PANCREAS WHIPPLES C+",
+    "topic": 1000073
+  },
+  "Q112": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN PERITONOGRAPHY",
+    "topic": 557757
+  },
+  "Q35": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN RENAL C+",
+    "topic": 557553
+  },
+  "Q36": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN RENAL TRAUMA"
+  },
+  "Q28": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN SMALL BOWEL C+",
+    "topic": 557537
+  },
+  "Q30B": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN TRAUMA BIPHASIC C+"
+  },
+  "Q30": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT ABDOMEN TRAUMA C+",
+    "topic": 557749
+  },
+  "Q83S": {
+    "bodyPart": "OTHER",
+    "name": "CT ABSCESS DRAINAGE BY SURGEON"
+  },
+  "Q122": {
+    "bodyPart": "ANKLE/FOOT",
+    "name": "CT ANKLE TRAUMA C-",
+    "topic": 559590
+  },
+  "Q82": {
+    "bodyPart": "OTHER",
+    "name": "CT BIOPSY",
+    "topic": 557638
+  },
+  "Q82S": {
+    "bodyPart": "OTHER",
+    "name": "CT BIOPSY BY SURGEON"
+  },
+  "Q152": {
+    "bodyPart": "SPINE",
+    "name": "CT CERVICAL SPINE PAED C-",
+    "topic": 557745
+  },
+  "Q18EP": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST + EXP + PRONE HRCT C+",
+    "topic": 602878
+  },
+  "Q17EP": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST + EXP + PRONE HRCT C-",
+    "topic": 602664
+  },
+  "Q17E": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST + EXP HRCT C-",
+    "topic": 558675
+  },
+  "Q17P": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST + PRONE HRCT C-",
+    "topic": 557501
+  },
+  "Q16": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST - SVCO C+",
+    "topic": 557494
+  },
+  "Q21CA": {
+    "bodyPart": "CHEST/ABDO",
+    "name": "CT CHEST ABDOMEN C+",
+    "topic": 557507
+  },
+  "Q21CAGAS": {
+    "bodyPart": "CHEST/ABDO",
+    "name": "CT CHEST ABDOMEN GAS C+"
+  },
+  "Q147": {
+    "bodyPart": "CHEST/ABDO",
+    "name": "CT CHEST ABDOMEN PELVIS PAED C+",
+    "topic": 557740
+  },
+  "Q139B": {
+    "bodyPart": "CHEST/ABDO",
+    "name": "CT CHEST ABDOMEN SPINE TRAUMA BIPHASIC C+",
+    "topic": 854845
+  },
+  "Q139": {
+    "bodyPart": "CHEST/ABDO",
+    "name": "CT CHEST ABDOMEN SPINE TRAUMA C+",
+    "topic": 557753
+  },
+  "Q18": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST C+",
+    "topic": 557504
+  },
+  "Q15": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST C+ Thick Slices"
+  },
+  "Q17": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST C-",
+    "topic": 557496
+  },
+  "Q14": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST C- Thick Slices"
+  },
+  "Q20": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST CTPA C+",
+    "topic": 557506
+  },
+  "Q143": {
+    "bodyPart": "NECK",
+    "name": "CT CHEST DYNAMIC AIRWAYS C-",
+    "topic": 557488
+  },
+  "Q148": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST EXP PAED C-",
+    "topic": 557741
+  },
+  "Q137": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST FROM CTA"
+  },
+  "Q19": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST HRCT with gaps C-"
+  },
+  "Q17LD": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST LOW DOSE C-",
+    "topic": 557502
+  },
+  "Q17OC": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST OESOPHAGUS C+",
+    "topic": 677504
+  },
+  "Q68": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST PAED C+",
+    "topic": 557654
+  },
+  "Q67": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST PAED C-",
+    "topic": 557653
+  },
+  "Q69": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST PAED HRCT with gaps"
+  },
+  "Q21": {
+    "bodyPart": "CHEST",
+    "name": "CT CHEST TRAUMA C+",
+    "topic": 557748
+  },
+  "Q83": {
+    "bodyPart": "OTHER",
+    "name": "CT DRAINAGE ",
+    "topic": 557639
+  },
+  "QDE": {
+    "bodyPart": "OTHER",
+    "name": "CT DUAL ENERGY"
+  },
+  "Q117": {
+    "bodyPart": "ELB/FORARM",
+    "name": "CT ELBOW TRAUMA C-",
+    "topic": 559576
+  },
+  "Q109": {
+    "bodyPart": "LOWERLIMB",
+    "name": "CT EXTREMITY - GOUT C-",
+    "topic": 559555
+  },
+  "Q108": {
+    "bodyPart": "LOWERLIMB",
+    "name": "CT EXTREMITY - LOWER LIMB",
+    "topic": 559552
+  },
+  "Q108C": {
+    "bodyPart": "LOWERLIMB",
+    "name": "CT EXTREMITY - LOWER LIMB C+",
+    "topic": 559554
+  },
+  "Q107": {
+    "bodyPart": "UPPERLIMB",
+    "name": "CT EXTREMITY - UPPER LIMB",
+    "topic": 559546
+  },
+  "Q107C": {
+    "bodyPart": "UPPERLIMB",
+    "name": "CT EXTREMITY - UPPER LIMB C+",
+    "topic": 559550
+  },
+  "Q06": {
+    "bodyPart": "HEAD",
+    "name": "CT FACIAL BONES"
+  },
+  "Q07": {
+    "bodyPart": "HEAD",
+    "name": "CT FACIAL BONES C-",
+    "topic": 557456
+  },
+  "Q123": {
+    "bodyPart": "ANKLE/FOOT",
+    "name": "CT FOOT OR TOE TRAUMA C-",
+    "topic": 559594
+  },
+  "Q142": {
+    "bodyPart": "OTHER",
+    "name": "CT FULL BODY MORTUARY"
+  },
+  "Q150": {
+    "bodyPart": "OTHER",
+    "name": "CT FULL BODY POST-MORTEM PAED",
+    "topic": 557743
+  },
+  "Q124": {
+    "bodyPart": "OTHER",
+    "name": "CT GUIDED ABLATION",
+    "topic": 557631
+  },
+  "Q125": {
+    "bodyPart": "OTHER",
+    "name": "CT GUIDED INJECTION",
+    "topic": 557633
+  },
+  "Q119": {
+    "bodyPart": "WRIST/HAND",
+    "name": "CT HAND OR FINGER TRAUMA C-",
+    "topic": 559585
+  },
+  "Q126": {
+    "bodyPart": "OTHER",
+    "name": "CT HEAD C SPINE C-",
+    "topic": 557469
+  },
+  "Q02": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD C+",
+    "topic": 557269
+  },
+  "Q01": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD C-",
+    "topic": 555990
+  },
+  "Q130": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT HEAD CHEST ABDOMEN C+",
+    "topic": 557466
+  },
+  "Q01D": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD DEMENTIA C-",
+    "topic": 602893
+  },
+  "Q131": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT HEAD NECK CHEST ABDOMEN C+",
+    "topic": 557468
+  },
+  "Q63": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD PAED C+",
+    "topic": 557650
+  },
+  "Q62": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD PAED C-",
+    "topic": 557648
+  },
+  "Q03": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD PERFUSION C+",
+    "topic": 557278
+  },
+  "Q138": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD SPINE CERVICAL TRAUMA C+",
+    "topic": 557752
+  },
+  "Q111": {
+    "bodyPart": "OTHER",
+    "name": "CT HEAD SPINE CHEST ABDOMEN TRAUMA C+",
+    "topic": 557751
+  },
+  "Q98C": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD STEALTH C+",
+    "topic": 557465
+  },
+  "Q98": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD STEALTH C-",
+    "topic": 557463
+  },
+  "Q05": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD TRAUMA"
+  },
+  "Q106": {
+    "bodyPart": "HEAD",
+    "name": "CT HEAD VENOGRAM C+",
+    "topic": 557557
+  },
+  "Q120": {
+    "bodyPart": "PLV/HIP/TH",
+    "name": "CT HIP TRAUMA C-",
+    "topic": 557645
+  },
+  "Q84": {
+    "bodyPart": "OTHER",
+    "name": "CT INTERVENTIONAL",
+    "topic": 557640
+  },
+  "Q84S": {
+    "bodyPart": "OTHER",
+    "name": "CT INTERVENTIONAL BY SURGEON"
+  },
+  "Q121": {
+    "bodyPart": "PLV/HIP/TH",
+    "name": "CT KNEE TRAUMA C-",
+    "topic": 559587
+  },
+  "Q38": {
+    "bodyPart": "LOWERLIMB",
+    "name": "CT LEG LENGTHS C-",
+    "topic": 557611
+  },
+  "Q141": {
+    "bodyPart": "OTHER",
+    "name": "CT LIMITED BODY POST-MORTEM",
+    "topic": 557755
+  },
+  "Q155": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT LIVER VOLUMES"
+  },
+  "Q09": {
+    "bodyPart": "NECK",
+    "name": "CT NECK C+",
+    "topic": 557479
+  },
+  "Q133": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT NECK CHEST ABDOMEN C+",
+    "topic": 557492
+  },
+  "Q132": {
+    "bodyPart": "NECK",
+    "name": "CT NECK CHEST C+",
+    "topic": 557490
+  },
+  "Q64": {
+    "bodyPart": "NECK",
+    "name": "CT NECK PAED C+",
+    "topic": 557652
+  },
+  "Q13": {
+    "bodyPart": "NECK",
+    "name": "CT NECK THYROID"
+  },
+  "Q88": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT NEPHROSTOGRAM",
+    "topic": 623190
+  },
+  "Q151": {
+    "bodyPart": "HEAD",
+    "name": "CT ORBITAL CELLULITIS PAED C+",
+    "topic": 557744
+  },
+  "Q11": {
+    "bodyPart": "HEAD",
+    "name": "CT ORBITS C-",
+    "topic": 557470
+  },
+  "Q10C": {
+    "bodyPart": "HEAD",
+    "name": "CT ORBITS SOFT TISSUE C+",
+    "topic": 557454
+  },
+  "Q10": {
+    "bodyPart": "HEAD",
+    "name": "CT ORBITS SOFT TISSUE C-",
+    "topic": 557453
+  },
+  "Q113": {
+    "bodyPart": "NECK",
+    "name": "CT PARATHYROID C+",
+    "topic": 557485
+  },
+  "Q87": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT PELVIMETRY C-",
+    "topic": 557612
+  },
+  "Q146": {
+    "bodyPart": "PLV/HIP/TH",
+    "name": "CT PELVIS PRE-OPERATIVE C-",
+    "topic": 557637
+  },
+  "Q145": {
+    "bodyPart": "PLV/HIP/TH",
+    "name": "CT PELVIS SOFT TISSUE C-",
+    "topic": 557636
+  },
+  "Q78": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CT PELVIS TRAUMA C-",
+    "topic": 557641
+  },
+  "Q009": {
+    "bodyPart": "NECK",
+    "name": "CT PITUITARY FOSSA C+",
+    "topic": 557483
+  },
+  "Q135": {
+    "bodyPart": "LOWERLIMB",
+    "name": "CT ROTATIONAL PROFILES",
+    "topic": 557634
+  },
+  "Q136": {
+    "bodyPart": "NECK",
+    "name": "CT SALIVARY GLANDS C-",
+    "topic": 557487
+  },
+  "Q116": {
+    "bodyPart": "SHLD/UPP",
+    "name": "CT SHOULDER TRAUMA C-",
+    "topic": 557620
+  },
+  "Q12C": {
+    "bodyPart": "HEAD",
+    "name": "CT SINUSES C+",
+    "topic": 557460
+  },
+  "Q12": {
+    "bodyPart": "HEAD",
+    "name": "CT SINUSES C-",
+    "topic": 557459
+  },
+  "Q153": {
+    "bodyPart": "HEAD",
+    "name": "CT SINUSES PAED C-",
+    "topic": 557746
+  },
+  "Q110": {
+    "bodyPart": "OTHER",
+    "name": "CT SKELETAL SURVEY",
+    "topic": 557608
+  },
+  "Q79": {
+    "bodyPart": "SPINE",
+    "name": "CT SPINE CERVICAL",
+    "topic": 557642
+  },
+  "Q81": {
+    "bodyPart": "SPINE",
+    "name": "CT SPINE LUMBAR",
+    "topic": 557644
+  },
+  "Q80": {
+    "bodyPart": "SPINE",
+    "name": "CT SPINE THORACIC",
+    "topic": 557643
+  },
+  "Q08C": {
+    "bodyPart": "HEAD",
+    "name": "CT TEMPORAL BONES C+",
+    "topic": 557452
+  },
+  "Q08": {
+    "bodyPart": "HEAD",
+    "name": "CT TEMPORAL BONES C-",
+    "topic": 557286
+  },
+  "Q154": {
+    "bodyPart": "HEAD",
+    "name": "CT TEMPORAL BONES PAED C-",
+    "topic": 557747
+  },
+  "Q118": {
+    "bodyPart": "WRIST/HAND",
+    "name": "CT WRIST TRAUMA C-",
+    "topic": 559580
+  },
+  "Q26": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CTA ABDOMEN BLEED C+",
+    "topic": 557528
+  },
+  "Q105": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CTA ABDOMEN DIEA C+",
+    "topic": 557567
+  },
+  "Q27": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CTA ABDOMEN ISCHAEMIA C+",
+    "topic": 557531
+  },
+  "Q53": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CTA AORTA AAA ACUTE C+",
+    "topic": 557570
+  },
+  "Q54": {
+    "bodyPart": "OTHER",
+    "name": "CTA AORTA AAA STENT WORKUP C+",
+    "topic": 557571
+  },
+  "Q51": {
+    "bodyPart": "CHEST/ABDO",
+    "name": "CTA AORTA DISSECTION C+",
+    "topic": 557560
+  },
+  "Q56": {
+    "bodyPart": "CHEST/ABDO",
+    "name": "CTA AORTA POST STENT ABDOMINAL C+",
+    "topic": 557578
+  },
+  "Q55": {
+    "bodyPart": "CHEST",
+    "name": "CTA AORTA POST STENT THORACIC C+",
+    "topic": 557574
+  },
+  "Q104": {
+    "bodyPart": "CHEST",
+    "name": "CTA AORTA TAVI C+",
+    "topic": 557562
+  },
+  "Q52": {
+    "bodyPart": "CHEST",
+    "name": "CTA AORTA THORACIC ABDOMINAL C+",
+    "topic": 557568
+  },
+  "Q85": {
+    "bodyPart": "OTHER",
+    "name": "CTA AORTA THORACIC C+",
+    "topic": 557596
+  },
+  "Q43": {
+    "bodyPart": "NECK",
+    "name": "CTA ARCH CAROTIDS C+",
+    "topic": 557555
+  },
+  "Q46": {
+    "bodyPart": "CHEST",
+    "name": "CTA CARDIAC ANATOMY C+",
+    "topic": 557602
+  },
+  "Q140": {
+    "bodyPart": "CHEST",
+    "name": "CTA CHEST BRONCHIAL ARTERIES C+",
+    "topic": 557564
+  },
+  "Q149": {
+    "bodyPart": "CHEST",
+    "name": "CTA CHEST PAED C+",
+    "topic": 557742
+  },
+  "Q47": {
+    "bodyPart": "CHEST",
+    "name": "CTA CORONARY ARTERIES C+",
+    "topic": 557604
+  },
+  "Q49": {
+    "bodyPart": "CHEST",
+    "name": "CTA CORONARY CALCIUM C-",
+    "topic": 557606
+  },
+  "Q127": {
+    "bodyPart": "CHEST",
+    "name": "CTA CORONARY GRAFT STUDY"
+  },
+  "Q48": {
+    "bodyPart": "CHEST",
+    "name": "CTA CORONARY VEINS C+",
+    "topic": 557605
+  },
+  "Q44": {
+    "bodyPart": "HEAD",
+    "name": "CTA HEAD COW C+",
+    "topic": 557556
+  },
+  "Q60": {
+    "bodyPart": "LOWERLIMB",
+    "name": "CTA LOWER LIMBS C+",
+    "topic": 557586
+  },
+  "Q50": {
+    "bodyPart": "CHEST",
+    "name": "CTA PULMONARY VEINS C+",
+    "topic": 557559
+  },
+  "Q58": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CTA RENAL ARTERY C+",
+    "topic": 557583
+  },
+  "Q57": {
+    "bodyPart": "ABDO/PELV",
+    "name": "CTA RENAL DONOR C+",
+    "topic": 557579
+  },
+  "Q59": {
+    "bodyPart": "UPPERLIMB",
+    "name": "CTA UPPER LIMB C+",
+    "topic": 557585
+  },
+  "Q61": {
+    "bodyPart": "LOWERLIMB",
+    "name": "CTV LOWER LIMBS C+",
+    "topic": 557589
+  }
+}

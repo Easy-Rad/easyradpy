@@ -11,6 +11,9 @@ def split_name(name: str) -> tuple[str, str]:
     result = re.split(r",\s*", name, maxsplit=1)
     return result[1] if len(result) > 1 else '', result[0]
 
+def parse_comrad_db_object(s: str) -> dict[str, str]:
+    return {k:v for k, v in re.findall(r'(rf_exam_type|rf_reason|rf_original_priority)=([^=]+?)(?=]|, \w+=)', s)}
+
 def tokenise_request(s: str) -> str:
     s = re.sub(
         # remove non-alphanumeric characters except for C- and C+

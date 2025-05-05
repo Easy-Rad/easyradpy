@@ -34,7 +34,7 @@ class InteleViewer:
         self._session.headers['intelerad-serialization-protocol'] = 'JsonSerializationProtocol1.0'
         self._session.params['username'] = username
 
-    def _request(self, service:str, protocol:str, method: str, params: list):
+    def _request(self, service:str, protocol:str, method: str, params: list, timeout: float | None = None ):
         result = self._session.post(
             url=f'http://{self._host}/{service}/{service}',
             headers={
@@ -43,6 +43,7 @@ class InteleViewer:
                 'intelerad-application-protocol': protocol,
             },
             data=gzip.compress(json.dumps(dict(method=method, params=params)).encode('utf-8')),
+            timeout=timeout,
         ).json()
         if not result['success']:
             error = result['error']
@@ -76,6 +77,7 @@ class InteleViewer:
                 'InteleViewer_5-6-1-P419',
                 None
             ],
+            timeout=5,
         )
         self._session.params['sessionId'] = session_id = sign_in_request['mSessionId']
         user = sign_in_request['mUser']

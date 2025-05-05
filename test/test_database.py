@@ -4,7 +4,7 @@ from src.autotriage import Request, Modality, BodyPart, Examination
 from src.database import Database, ExaminationNotFoundError
 
 
-class DatabaseTest(unittest.TestCase):
+class TestDatabase(unittest.TestCase):
 
     database = Database()
 

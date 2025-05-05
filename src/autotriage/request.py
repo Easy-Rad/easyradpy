@@ -4,7 +4,8 @@ from dataclasses import dataclass
 from .error import AutoTriageError
 from .modality import Modality
 from .priority import Priority
-from ..util.format import tokenise_request
+from ..util.format import tokenise_request, parse_comrad_db_object
+
 
 @dataclass
 class Request:
@@ -14,14 +15,9 @@ class Request:
     def tokenised_exam(self):
         return tokenise_request(self.exam)
 
-    # def __post_init__(self):
-    #     print(f'Modality: {self.modality}')
-    #     print(f'Exam requested: {self.exam}')
-    #     print(f'Priority: {self.priority}')
-
 def request_from_clipboard(clipboard: str) -> Request:
     try:
-        data = {k:v for k,v in (item.split('=', 1) for item in re.search(r'\[(.*)]', clipboard)[1].split(', ') )}
+        data = parse_comrad_db_object(clipboard)
     except TypeError:
         raise AutoTriageError('No match')
     try:

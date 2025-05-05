@@ -4,7 +4,8 @@ import sys
 
 from ahk import AHK
 
-from ..autotriage import AutoTriageError, Priority, BodyPart, request_from_clipboard
+from src.autotriage.select_examination_gui import SelectExaminationGUI
+from ..autotriage import AutoTriageError, Priority, BodyPart, request_from_clipboard, Examination
 from ..database import Database, ExaminationNotFoundError
 
 class MyAHK:
@@ -56,26 +57,29 @@ class MyAHK:
         finally:
             self.ahk.set_clipboard(restore_clipboard)
         request = request_from_clipboard(clipboard)
+        self.ahk.send('{Tab}') # Tab to "Radiology Category"
+        match request.priority:
+            case Priority.UNKNOWN: self.ahk.show_info_traytip('No clinical category', '')
+            case Priority.STAT: self.ahk.send('{Home}S')
+            case Priority.HOURS_4: self.ahk.send('{Home}4')
+            case Priority.HOURS_24: self.ahk.send('{Home}2')
+            case Priority.DAYS_2: self.ahk.send('{Home}22')
+            case Priority.WEEKS_2: self.ahk.send('{Home}222')
+            case Priority.WEEKS_4: self.ahk.send('{Home}44')
+            case Priority.WEEKS_6: self.ahk.send('{Home}6')
+            case Priority.PLANNED: self.ahk.send('{Home}P')
+        self.ahk.send('{Tab 7}') # Tab to "Rank"
+        if rank is not None:
+            self.ahk.send(f'^a{rank}') # select all, enter rank
+        self.ahk.send('{Tab 2}') # Tab to "Body Part"
         try:
-            body_part, code = self.database.get_examination(request)
-        except ExaminationNotFoundError as e:
-            raise AutoTriageError(f'No examination found in database for {e.request.exam}')
-        finally:
-            self.ahk.send('{Tab}') # Tab to "Radiology Category"
-            match request.priority:
-                case Priority.UNKNOWN: self.ahk.show_info_traytip('No clinical category', '')
-                case Priority.STAT: self.ahk.send('{Home}S')
-                case Priority.HOURS_4: self.ahk.send('{Home}4')
-                case Priority.HOURS_24: self.ahk.send('{Home}2')
-                case Priority.DAYS_2: self.ahk.send('{Home}22')
-                case Priority.WEEKS_2: self.ahk.send('{Home}222')
-                case Priority.WEEKS_4: self.ahk.send('{Home}44')
-                case Priority.WEEKS_6: self.ahk.send('{Home}6')
-                case Priority.PLANNED: self.ahk.send('{Home}P')
-            self.ahk.send('{Tab 7}') # Tab to "Rank"
-            if rank is not None:
-                self.ahk.send(f'^a{rank}') # select all, enter rank
-            self.ahk.send('{Tab 2}') # Tab to "Body Part"
+            self.fill_out_examination(self.database.get_examination(request))
+        except ExaminationNotFoundError:
+            SelectExaminationGUI(request, self.fill_out_examination, self.database.get_all_examinations(request.modality))
+
+    def fill_out_examination(self, examination: Examination):
+        body_part, code = examination
+        self.ahk.win_activate('COMRAD Medical Systems Ltd. ahk_class SunAwtFrame')
         match body_part:
             case BodyPart.CHEST: self.ahk.send('{Home}C')
             case BodyPart.CHEST_ABDO: self.ahk.send('{Home}CC')
@@ -87,13 +91,6 @@ class MyAHK:
             + code # Enter code
             + '{Tab}' # Tab out of cell
         )
-
-
-
-
-
-
-
 
 
 
