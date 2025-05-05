@@ -27,7 +27,6 @@ class MyAHK:
         self.ahk.add_hotkey('Numpad5', lambda: self.triage(5), self.autotriage_error_handler)
         self.ahk.add_hotkey('MButton', lambda: self.triage(self.DEFAULT_RANK), self.autotriage_error_handler)
         self.ahk.start_hotkeys()  # start the hotkey process thread
-        print('Created AHK instance')
         if block_forever:
             self.ahk.block_forever()
 
@@ -39,7 +38,6 @@ class MyAHK:
         self.ahk.show_error_traytip(e.__class__.__name__, e.message if isinstance(e, AutoTriageError) else str(e))
 
     def triage(self, rank: int | None = None):
-        print(f'Begin triage with rank: {rank}')
         self.ahk.send('!c') # Close any AMR popup with Alt+C
         self.ahk.send('{F6}{Tab}') # Focus on the tree
         restore_clipboard = self.ahk.get_clipboard()
@@ -58,27 +56,26 @@ class MyAHK:
         finally:
             self.ahk.set_clipboard(restore_clipboard)
         request = request_from_clipboard(clipboard)
-        # self.ahk.show_traytip('Success', f'{request.modality.name} - {request.exam}')
-        self.ahk.send('{Tab}') # Tab to "Radiology Category"
-        match request.priority:
-            case Priority.UNKNOWN: self.ahk.show_info_traytip('No clinical category', '')
-            case Priority.STAT: self.ahk.send('{Home}S')
-            case Priority.HOURS_4: self.ahk.send('{Home}4')
-            case Priority.HOURS_24: self.ahk.send('{Home}2')
-            case Priority.DAYS_2: self.ahk.send('{Home}22')
-            case Priority.WEEKS_2: self.ahk.send('{Home}222')
-            case Priority.WEEKS_4: self.ahk.send('{Home}44')
-            case Priority.WEEKS_6: self.ahk.send('{Home}6')
-            case Priority.PLANNED: self.ahk.send('{Home}P')
-        self.ahk.send('{Tab 7}') # Tab to "Rank"
-        if rank is not None:
-            self.ahk.send(f'^a{rank}') # select all, enter rank
-        self.ahk.send('{Tab 2}') # Tab to "Body Part"
         try:
             body_part, code = self.database.get_examination(request)
         except ExaminationNotFoundError as e:
-            # todo implement GUI
-            raise
+            raise AutoTriageError(f'No examination found in database for {e.request.exam}')
+        finally:
+            self.ahk.send('{Tab}') # Tab to "Radiology Category"
+            match request.priority:
+                case Priority.UNKNOWN: self.ahk.show_info_traytip('No clinical category', '')
+                case Priority.STAT: self.ahk.send('{Home}S')
+                case Priority.HOURS_4: self.ahk.send('{Home}4')
+                case Priority.HOURS_24: self.ahk.send('{Home}2')
+                case Priority.DAYS_2: self.ahk.send('{Home}22')
+                case Priority.WEEKS_2: self.ahk.send('{Home}222')
+                case Priority.WEEKS_4: self.ahk.send('{Home}44')
+                case Priority.WEEKS_6: self.ahk.send('{Home}6')
+                case Priority.PLANNED: self.ahk.send('{Home}P')
+            self.ahk.send('{Tab 7}') # Tab to "Rank"
+            if rank is not None:
+                self.ahk.send(f'^a{rank}') # select all, enter rank
+            self.ahk.send('{Tab 2}') # Tab to "Body Part"
         match body_part:
             case BodyPart.CHEST: self.ahk.send('{Home}C')
             case BodyPart.CHEST_ABDO: self.ahk.send('{Home}CC')

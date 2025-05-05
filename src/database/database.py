@@ -1,7 +1,7 @@
 import json
 
 from ..autotriage import Request, Examination, BodyPart, Modality
-from ..util.format import tokenise_request, decode_key
+from ..util.format import decode_key
 
 import requests
 
@@ -13,21 +13,11 @@ class Database:
         self.session = session
 
     def get_examination(self, request: Request) -> Examination:
-        tokenised_exam = tokenise_request(request.exam)
-        data = self.session.get(f'{FIREBASE_URL}/examination/{request.modality}.json', params=dict(
-            orderBy=json.dumps('tokenised'),
-            equalTo=json.dumps(tokenised_exam),
-            limitToFirst=1,
-        )).json()
+        data = self.session.get(f'{FIREBASE_URL}/label/{request.modality}/{request.tokenised_exam()}.json').json()
         if data is not None:
-            code, examination = next(iter(data.items()))
-            encoded_body_part = examination['bodyPart']
-        else: # try alias
-            code = self.session.get(f'{FIREBASE_URL}/label/{request.modality}/{tokenised_exam}.json').json()
-            if code is None:
-                raise ExaminationNotFoundError(request)
-            encoded_body_part = self.session.get(f'{FIREBASE_URL}/examination/{request.modality}/{code}/bodyPart.json').json()
-        return BodyPart(decode_key(encoded_body_part)), code
+            return BodyPart(data['bodyPart']), data['code']
+        else:
+            raise ExaminationNotFoundError(request)
 
 class ExaminationNotFoundError(Exception):
     def __init__(self, request: Request):

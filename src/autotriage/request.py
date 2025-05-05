@@ -4,12 +4,15 @@ from dataclasses import dataclass
 from .error import AutoTriageError
 from .modality import Modality
 from .priority import Priority
+from ..util.format import tokenise_request
 
 @dataclass
 class Request:
     modality: Modality
     exam: str
     priority: Priority = Priority.PLANNED # default for testing
+    def tokenised_exam(self):
+        return tokenise_request(self.exam)
 
     # def __post_init__(self):
     #     print(f'Modality: {self.modality}')
