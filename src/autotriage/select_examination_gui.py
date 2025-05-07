@@ -10,7 +10,7 @@ from .request import Request
 
 class SelectExaminationGUI:
 
-    def __init__(self, request: Request, callback: Callable[[Examination], None], examinations: dict | None):
+    def __init__(self, request: Request, callback: Callable[[Examination, Request, bool], None], examinations: dict | None):
         self.request = request
         self.callback = callback
         self.examinations = examinations or self._get_examinations()
@@ -49,9 +49,9 @@ class SelectExaminationGUI:
 
     def _select_study(self, event):
         code = self.tree.identify_row(event.y)
-        examination: Examination = BodyPart(self.examinations[code]['bodyPart']), code
-        self.callback(examination)
         self.root.destroy()
+        examination: Examination = BodyPart(self.examinations[code]['bodyPart']), code
+        self.callback(examination, self.request, False)
 
     @staticmethod
     def _get_examinations():
@@ -67,4 +67,6 @@ class SelectExaminationGUI:
                 self.tree.insert('', 'end', iid=code, text=data['name'], values=(code,), tags='exam')
 
 if __name__ == "__main__":
-    SelectExaminationGUI(Request(Modality.CT, 'CT HEAD ABDOMEN'), lambda x: print(x), None)
+    SelectExaminationGUI(Request(Modality.CT, 'CT HEAD ABDOMEN'), lambda exam,request,found: print(
+        exam, request, found
+    ), None)
