@@ -27,14 +27,14 @@ class Database:
         return self.cached_examinations[modality]
 
     def log_examination(self, initials: str, examination: Examination, request: Request, found_in_database: bool):
-        print(self.session.post(f'{FIREBASE_URL}/log.json', json=dict(
+        self.session.post(f'{FIREBASE_URL}/log.json', json=dict(
             user=initials,
             request=request.exam,
             modality=request.modality,
             code=examination[1],
             found_in_database=found_in_database,
             timestamp={'.sv': 'timestamp'},
-        )).json())
+        ))
 
 class ExaminationNotFoundError(Exception):
     pass

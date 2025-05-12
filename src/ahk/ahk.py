@@ -4,7 +4,6 @@ import sys
 import re
 
 from ahk import AHK
-from ahk.directives import NoTrayIcon
 
 from src.autotriage.select_examination_gui import SelectExaminationGUI
 from ..autotriage import AutoTriageError, Priority, BodyPart, request_from_clipboard, Examination, Request
@@ -20,7 +19,7 @@ class MyAHK:
             getattr(sys, "_MEIPASS", os.path.dirname(os.path.realpath(sys.executable))),
             "AutoHotkey.exe",
         ) if getattr(sys, 'frozen', False) else ''
-        self.ahk = AHK(executable_path=executable_path, version='v2', directives=[NoTrayIcon])
+        self.ahk = AHK(executable_path=executable_path, version='v2')
         self.ahk.set_send_mode('Event')
         self.ahk.set_title_match_mode(1)
         self.ahk.add_hotkey('^+m', self.show_message)
@@ -32,6 +31,7 @@ class MyAHK:
         self.ahk.add_hotkey('Numpad5', lambda: self.triage(5), self.autotriage_error_handler)
         self.ahk.add_hotkey('~MButton', lambda: self.triage(self.DEFAULT_RANK), self.autotriage_error_handler)
         self.ahk.add_hotkey('~RButton', self.complete_triage)
+        self.ahk.add_hotkey('~NumpadEnter', self.complete_triage)
         self.ahk.start_hotkeys()  # start the hotkey process thread
         if block_forever:
             self.ahk.block_forever()
@@ -103,7 +103,6 @@ class MyAHK:
         self.database.log_examination(initials, examination, request, found_in_database)
 
     def complete_triage(self):
-        if not self.ahk.win_is_active(self.COMRAD_WINDOW): return
-        self.ahk.send('!s') # Alt-S
+        if self.ahk.win_is_active(self.COMRAD_WINDOW): self.ahk.send('!s') # Alt-S
 
 
