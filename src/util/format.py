@@ -1,6 +1,9 @@
 import re
 from datetime import datetime
 
+from lxml import etree
+
+
 def date_format(date: datetime) -> str:
     return date.strftime('%a %d %b %Y, %H:%M %Z')
 
@@ -13,6 +16,29 @@ def split_name(name: str) -> tuple[str, str]:
 
 def parse_comrad_db_object(s: str) -> dict[str, str]:
     return {k:v for k, v in re.findall(r'(rf_exam_type|rf_reason|rf_original_priority)=([^=]+?)(?=]|, \w+=)', s)}
+
+
+def parse_doctext(html) -> tuple[str | None, int | None]:
+    clinical_details = None
+    egfr = None
+    try:
+        doc = etree.fromstring(html)
+    except (ValueError, etree.XMLSyntaxError):
+        pass
+    else:
+        xpath_expr = '//p[@id="CLINDETAILS"]/text()|//p[@id="CLINDETAILS"]/following-sibling::p[not(@id) and count(preceding-sibling::p[@id][1]|//p[@id="CLINDETAILS"])=1 and count(preceding-sibling::p[@id and @id!="CLINDETAILS" and position() < count(preceding-sibling::p[@id="CLINDETAILS"]/following-sibling::p)])=0]/text()'
+        clinical_details = ' '.join(text.strip() for text in doc.xpath(xpath_expr))[2:]
+        if not clinical_details:
+            try:
+                clinical_details = doc.xpath('./BODY/p/b[contains(text(), "Clinical Notes")]')[0].tail.strip()
+            except IndexError:
+                pass
+        try:
+            egfr = int(re.match('([0-9]+) mL/min/1.73m2', doc.find('./BODY/p[@id="EGFRRESULT"]/').tail[2:])[1])
+        except (AttributeError, TypeError):
+            pass
+    # print(clinical_details, egfr)
+    return clinical_details, egfr
 
 def tokenise_request(s: str) -> str:
     s = re.sub(

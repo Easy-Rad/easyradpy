@@ -31,3 +31,4 @@ ps_reports.json
 dist_resources/
 /tools/serviceAccountKey.json
 /tools/AutoTriage.sqlite3
+/tools/triage_history.csv
