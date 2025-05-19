@@ -1,6 +1,9 @@
+import json
 import sqlite3
-from firebase_admin import credentials, db, initialize_app
-from src.database import FIREBASE_URL
+from typing import Callable
+
+from firebase_admin import db
+
 from src.util.format import tokenise_request
 
 FIREBASE_ADMIN_UID = 'db-admin'
@@ -51,17 +54,34 @@ def update_database_labels(overwrite=False):
         if overwrite: ref.set(output)
         else: ref.update(output)
 
+
+def transform_json(transform: Callable[[dict], dict], filepath: str, output_filepath: str):
+    with open(filepath, 'r') as file:
+        data = json.load(file)
+    with open(output_filepath, 'w') as output_file:
+        json.dump(transform(data), output_file, indent=None, separators=(',', ':'))
+
+
+def transform_labels(labels: dict):
+    return {modality: {tokenized: data["code"] for tokenized, data in exams.items()} for modality, exams in
+            labels.items()}
+
+
+def transform_exams(exams: dict):
+    return {modality: {code: [data["bodyPart"], data["name"]] for code, data in exams.items()} for modality, exams in
+            exams.items()}
+
 if __name__ == '__main__':
-    cred = credentials.Certificate(SERVICE_ACCOUNT_KEY_PATH)
-    default_app = initialize_app(cred, dict(
-        databaseURL=FIREBASE_URL,
-        databaseAuthVariableOverride=dict(uid=FIREBASE_ADMIN_UID),
-    ))
+    # cred = credentials.Certificate(SERVICE_ACCOUNT_KEY_PATH)
+    # default_app = initialize_app(cred, dict(
+    #     databaseURL=FIREBASE_URL,
+    #     databaseAuthVariableOverride=dict(uid=FIREBASE_ADMIN_UID),
+    # ))
     # update_database_modalities()
     # update_database_body_parts()
     # update_database_examinations()
     # update_database_labels()
-    tokenised = tokenise_request('CT EXTREMITY - LOWER LIMB C+')
-    result = db.reference(f'/label/CT/{tokenised}').get()
-    print(result)
-
+    # tokenised = tokenise_request('CT EXTREMITY - LOWER LIMB C+')
+    # result = db.reference(f'/label/CT/{tokenised}').get()
+    # print(result)
+    transform_json(transform_exams, 'exams_in.json', 'exams.json')
